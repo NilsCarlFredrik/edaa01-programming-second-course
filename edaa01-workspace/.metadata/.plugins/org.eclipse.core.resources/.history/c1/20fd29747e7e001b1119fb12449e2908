@@ -1,0 +1,28 @@
+package sudoku;
+
+import java.awt.*;
+
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
+public class SudokuController2 extends JFrame {
+	
+	public static final int GRID_SIZE = 9;    // Size of the board
+	public static final int SUBGRID_SIZE = 3; // Size of the sub-grid
+
+	
+	
+	private JTextField[][] grid = new JTextField[GRID_SIZE][GRID_SIZE];
+	
+	
+	public SudokuController2(Sudoku sudoku) {
+		SwingUtilities.invokeLater(() -> 
+		createWindow(sudoku, "Sudoku", 500, 500));
+	}
+	
+	private void createWindow(Sudoku sudoku, String title, 
+			int width, int height) {
+		
+		Container pane = getContentPane();
+	}
+}

@@ -1,0 +1,232 @@
+package bst;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+
+public class BinarySearchTree<E> {
+  BinaryNode<E> root;  // Används också i BSTVisaulizer
+  int size;            // Används också i BSTVisaulizer
+  private Comparator<E> comp;
+    
+	/**
+	 * Constructs an empty binary search tree.
+	 */
+	public BinarySearchTree() {
+		root = null;
+		size = 0;
+		comp = (e1, e2) -> ((Comparable<E>) e1).compareTo(e2);
+	}
+	
+	/**
+	 * Constructs an empty binary search tree, sorted according to the specified comparator.
+	 */
+	public BinarySearchTree(Comparator<E> comp) {
+		root = null;
+		size = 0;
+		this.comp = comp;
+	}
+	
+	public static void main(String[] args) {
+		BSTVisualizer b = new BSTVisualizer("BinaryTree", 400, 400);
+		BinarySearchTree<Integer> myTree = new BinarySearchTree<Integer>();
+		
+		myTree.add(1);
+		myTree.add(2);
+		myTree.add(3);
+		myTree.add(6);
+		myTree.add(7);
+		myTree.add(12);
+		myTree.add(9);
+		myTree.add(8);
+		myTree.add(20);
+		myTree.add(22);
+		myTree.add(23);
+		myTree.add(26);
+		myTree.add(28);
+		myTree.add(30);
+		myTree.add(10);
+		myTree.add(50);
+		myTree.add(100);
+		myTree.add(18);
+		myTree.add(4);
+		
+		BSTVisualizer b2 = new BSTVisualizer("BinaryTree", 400, 400);
+		BinarySearchTree<String> myTree2 = new BinarySearchTree<String>();
+		
+		myTree2.add("A");
+		myTree2.add("B");
+		myTree2.add("C");
+		myTree2.add("D");
+		myTree2.add("E");
+		myTree2.add("F");
+		myTree2.add("G");
+		myTree2.add("H");
+		myTree2.add("I");
+		myTree2.add("J");
+		
+		BSTVisualizer b3 = new BSTVisualizer("BinaryTree", 400, 400);
+//		BinarySearchTree<Person> myPersonTree = new BinarySearchTree<Person>();
+		BinarySearchTree<Person> myPersonTree = 
+				new BinarySearchTree<Person>((e1, e2) -> e1.getName().compareTo(e2.getName()));
+		
+		myPersonTree.add(new Person("Anders", 7));
+		myPersonTree.add(new Person("Bosse", 6));
+		myPersonTree.add(new Person("Carin", 5));
+		myPersonTree.add(new Person("Darin", 4));
+		myPersonTree.add(new Person("Erik", 3));
+		myPersonTree.add(new Person("Frida", 2));
+		myPersonTree.add(new Person("Gunnar", 1));
+		
+//		myTree.rebuild();
+//		myTree2.rebuild();
+//		myPersonTree.rebuild();
+		
+		b.drawTree(myTree);
+		b2.drawTree(myTree2);
+		b3.drawTree(myPersonTree);
+	}
+
+	/**
+	 * Inserts the specified element in the tree if no duplicate exists.
+	 * @param x element to be inserted
+	 * @return true if the the element was inserted
+	 */
+	public boolean add(E x) {
+		return add(root, x);
+	}
+	
+	private boolean add(BinaryNode<E> current, E x) {		
+		if (root == null) {
+			root = new BinaryNode<E>(x);
+			size++;
+			return true;
+		}
+		int compResult = comp.compare(x, current.element);
+		if (compResult == 0) {
+			return false;
+		} else if (compResult < 0) {
+			if (current.left == null) {
+				current.left = new BinaryNode<E>(x);
+				size++;
+				return true;
+			} else { 
+				return add(current.left, x);
+			}
+		} else if (compResult > 0) {
+			if (current.right == null) {
+				current.right = new BinaryNode<E>(x);
+				size++;
+				return true;
+			} else { 
+				return add(current.right, x);
+			}
+		} else {
+			return false;
+		}
+		
+	}
+	
+	/**
+	 * Computes the height of tree.
+	 * @return the height of the tree
+	 */
+	public int height() {
+		return height(root);
+	}
+	
+	private int height(BinaryNode<E> node) {
+		if (node == null) {
+			return 0;
+		} else {
+			return 1 + Math.max(height(node.left), height(node.right));
+		}
+	}
+	
+	/**
+	 * Returns the number of elements in this tree.
+	 * @return the number of elements in this tree
+	 */
+	public int size() {
+		return size;
+	}
+	
+	/**
+	 * Removes all of the elements from this list.
+	 */
+	public void clear() {
+		root = null;
+		size = 0;
+	}
+	
+	/**
+	 * Print tree contents in inorder.
+	 */
+	public void printTree() {
+		print(root);
+	}
+	
+	private void print(BinaryNode<E> n) {
+		if (n != null) {
+			print(n.left);
+			System.out.print(n.element + " ");
+			print(n.right);
+		}
+	}
+
+	/** 
+	 * Builds a complete tree from the elements in the tree.
+	 */
+	public void rebuild() {
+		ArrayList<E> testList = new ArrayList<>();
+		toArray(root, testList);
+		System.out.println(testList.toString());
+		root = buildTree(testList, 0, testList.size());
+
+	}
+	
+	/*
+	 * Adds all elements from the tree rooted at n in inorder to the list sorted.
+	 */
+	private void toArray(BinaryNode<E> n, ArrayList<E> sorted) {
+		if (n != null) {
+			toArray(n.left, sorted);
+			sorted.add(n.element);
+			toArray(n.right, sorted);
+		}
+	}
+	
+	/*
+	 * Builds a complete tree from the elements from position first to 
+	 * last in the list sorted.
+	 * Elements in the list a are assumed to be in ascending order.
+	 * Returns the root of tree.
+	 */
+	private BinaryNode<E> buildTree(ArrayList<E> sorted, int first, int last) {
+		if (first > last || first == sorted.size()) {
+			return null;
+		} else {
+			int index = (last + first) / 2;
+			BinaryNode<E> node = new BinaryNode<E>(sorted.get(index));
+			node.left = buildTree(sorted, first, index - 1);
+			node.right = buildTree(sorted, index + 1, last);
+			return node;
+		}
+	}
+	
+
+
+	static class BinaryNode<E> {
+		E element;
+		BinaryNode<E> left;
+		BinaryNode<E> right;
+
+		private BinaryNode(E element) {
+			this.element = element;
+			left = null;
+			right = null;
+		}	
+	}
+	
+}

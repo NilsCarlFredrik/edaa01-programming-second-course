@@ -1,0 +1,121 @@
+package bst;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+class BinarySearchTreeTest {
+
+	BinarySearchTree<Integer> myIntTree;
+	BinarySearchTree<Person> myStrTree;
+	
+	@BeforeEach
+	void setUp() throws Exception {
+		myIntTree = new BinarySearchTree<Integer>();
+		myStrTree = new BinarySearchTree<Person>( 
+				(e1, e2) -> e1.getName().compareTo(e2.getName()) );
+		myStrTree = new BinarySearchTree<Person>();
+	}
+
+	@AfterEach
+	void tearDown() throws Exception {
+		myIntTree.clear();
+		myStrTree.clear();
+	}
+	
+	@Test
+	void testAddInt() {
+		assertTrue(myIntTree.add(5));
+		assertTrue(myIntTree.add(3));
+		assertTrue(myIntTree.add(1));
+		assertTrue(myIntTree.add(8));
+		assertTrue(myIntTree.add(2));
+		assertFalse(myIntTree.add(1));
+		assertFalse(myIntTree.add(1));
+		assertFalse(myIntTree.add(1));
+	}
+	
+	@Test 
+	void testAddPerson() {
+		assertTrue(myStrTree.add(new Person("jonas", 123)));
+		assertTrue(myStrTree.add(new Person("lisa", 213)));
+		assertTrue(myStrTree.add(new Person("jonas", 142)));
+	}
+	
+	@Test
+	void testSize() {
+		assertEquals(myIntTree.size, 0);
+		myIntTree.add(2);
+		myIntTree.add(1);
+		myIntTree.add(1);
+		assertEquals(myIntTree.size, 2);
+	    myStrTree.add(new Person("jonas", 123));
+		myStrTree.add(new Person("lisa", 123));
+		myStrTree.add(new Person("jonas", 1532));
+		assertEquals(myStrTree.size, 2);
+		
+		
+	}
+
+	@Test
+	void testHeight() {
+		assertTrue(myIntTree.height() == 0);
+		myIntTree.add(2);
+		myIntTree.add(1);
+		assertFalse(myIntTree.add(1));
+		assertTrue(myIntTree.size() == 2);
+		
+	}
+
+	
+	@Test 
+	void testClear() {
+		myIntTree.add(6);
+		myIntTree.add(1);
+		myIntTree.add(1);
+		myIntTree.add(3);
+		myIntTree.add(5);
+		myIntTree.add(2);
+		myIntTree.add(9);
+		myIntTree.add(10);
+		myIntTree.add(7);
+		myIntTree.clear();
+		assertTrue(myIntTree.size() == 0);
+		myIntTree.printTree();
+	}
+	
+	@Test
+	void testPrint() {
+		System.out.print("testPrint\n");
+		myIntTree.add(6);
+		myIntTree.add(1);
+		myIntTree.add(1);
+		myIntTree.add(3);
+		myIntTree.add(5);
+		myIntTree.add(2);
+		myIntTree.add(9);
+		myIntTree.add(10);
+		myIntTree.add(7);
+		myIntTree.printTree();
+		
+		System.out.println();
+		myStrTree.add(new Person("jonas", 123));
+		myStrTree.add(new Person("lisa", 123));
+		myStrTree.add(new Person("jonas", 1532));
+		myStrTree.printTree();
+	}
+	
+//	@Test
+//	void testRebuild() {
+//		System.out.print("\ntestRebuild\n");
+//		myStrTree.add(new Person("jonas", 123));
+//		myStrTree.add(new Person("lisa", 123));
+//		myStrTree.add(new Person("jonas", 1532));
+//		myStrTree.printTree();
+//		System.out.println(" ");
+//		myStrTree.rebuild();
+//	}
+
+}

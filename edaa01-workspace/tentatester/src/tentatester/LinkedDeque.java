@@ -1,0 +1,20 @@
+package tentatester;
+
+public class LinkedDeque {
+
+	     public static void main(String []args){
+	        int nbr = 122;
+	        int sum = 0;
+	        if (nbr < 0)
+	            nbr = -nbr;
+	        int nbrOfDigits = String.valueOf(nbr).length();
+	        int pow = 10;
+	            for (int i = 1 ; i == nbrOfDigits ; i++) {
+	                sum += nbr % pow;
+	                nbr = nbr / pow;
+	                pow = pow * 10;
+	            }
+	        System.out.println(sum);
+	}
+
+}

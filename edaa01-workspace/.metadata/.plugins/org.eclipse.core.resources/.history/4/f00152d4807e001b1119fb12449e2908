@@ -1,0 +1,117 @@
+package sudoku;
+
+
+import java.awt.*;
+import javax.swing.*;
+
+
+public class SudokuController{
+	
+	public static final int GRID_SIZE = 9;    // Size of the board
+	public static final int SUBGRID_SIZE = 3; // Size of the sub-grid
+	
+	 // Name-constants for UI control (sizes, colors and fonts)
+	   public static final int CELL_SIZE = 60;   // Cell width/height in pixels
+	   public static final int CANVAS_WIDTH  = CELL_SIZE * GRID_SIZE;
+	   public static final int CANVAS_HEIGHT = CELL_SIZE * GRID_SIZE;
+	                                             // Board width/height in pixels
+	   public static final Color OPEN_CELL_BGCOLOR = Color.YELLOW;
+	   public static final Color OPEN_CELL_TEXT_YES = new Color(0, 255, 0);  // RGB
+	   public static final Color OPEN_CELL_TEXT_NO = Color.RED;
+	   public static final Color CLOSED_CELL_BGCOLOR = new Color(240, 240, 240); // RGB
+	   public static final Color CLOSED_CELL_TEXT = Color.BLACK;
+	   public static final Font FONT_NUMBERS = new Font("Monospaced", Font.BOLD, 20);
+
+
+//	private JFrame frame = new JFrame(title);
+//	private JTextField[][] grid = new JTextField[GRID_SIZE][GRID_SIZE];
+
+
+	public SudokuController(Sudoku sudoku) {
+	SwingUtilities.invokeLater(() -> 
+	createWindow(sudoku, "Sudoku", 500, 500));
+	}
+
+	private void createWindow(Sudoku sudoku, String title, 
+		int width, int height) {
+		
+		int[][] grid = sudoku.getMatrix();
+		
+		
+		JFrame frame = new JFrame(title);
+		JTextField[][] cells = new JTextField[GRID_SIZE][GRID_SIZE];
+		
+		Container pane = frame.getContentPane();
+		
+		  for (int row = 0; row < GRID_SIZE; ++row) {
+		         for (int col = 0; col < GRID_SIZE; ++col) {
+		            JTextField[][] tfCells = new JTextField[row][col]; // Allocate element of array
+		            pane.add(tfCells[row][col]);            // ContentPane adds JTextField
+		            if (grid[row][col] == 0) {
+		               cells[row][col].setText("");     // set to empty string
+		               cells[row][col].setEditable(true);
+		               cells[row][col].setBackground(OPEN_CELL_BGCOLOR);
+		 
+		               // Add ActionEvent listener to process the input
+		               // ... [TODO 4] (Later) ...
+		            } else {
+		               cells[row][col].setText(grid[row][col] + "");
+		               cells[row][col].setEditable(false);
+		               cells[row][col].setBackground(CLOSED_CELL_BGCOLOR);
+		               cells[row][col].setForeground(CLOSED_CELL_TEXT);
+		            }
+		            // Beautify all the cells
+		            tfCells[row][col].setHorizontalAlignment(JTextField.CENTER);
+		            tfCells[row][col].setFont(FONT_NUMBERS);
+		         }
+		      }
+		  
+		  pane.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
+	      frame.pack();
+	 
+	      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // Handle window closing
+	      frame.setTitle(title);
+	      frame.setVisible(true); 
+	}
+}
+
+
+//public class SudokuController {
+//
+//	public SudokuController(Sudoku sudoku) {
+//		SwingUtilities.invokeLater(() -> 
+//				createWindow(sudoku, "Sudoku", 500, 500));
+//	}
+//
+//
+//	private void createWindow(Sudoku sudoku, String title, 
+//							int width, int height) {
+//	
+//	JFrame frame = new JFrame(title);
+//	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//	frame.pack();
+//	frame.setVisible(true);
+//	frame.setSize(width, height);
+//	
+//	Container pane = frame.getContentPane();
+//	
+//	
+//	JPanel gridPanel = new JPanel();
+//	JTextField[][] grid = new JTextField[9][9];
+//	
+//	
+//	//gridPanel.add(grid, BorderLayout.CENTER);
+//	
+//	
+//	JPanel buttonPanel = new JPanel();
+//	JButton clear = new JButton("Clear");
+//	JButton solve = new JButton("Solve");
+//	buttonPanel.add(clear);
+//	buttonPanel.add(solve);
+//	
+//	pane.add(buttonPanel, BorderLayout.SOUTH);
+//	
+//	}
+//	
+//}
+

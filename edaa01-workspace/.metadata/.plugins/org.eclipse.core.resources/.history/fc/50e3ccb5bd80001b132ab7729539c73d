@@ -1,0 +1,124 @@
+package sudoku;
+import java.awt.*;        
+import java.util.Arrays;
+
+import javax.swing.*;    
+ 
+public class SudokuController extends JFrame {
+   public static final int GRID_SIZE = 9;    
+   public static final int CELL_SIZE = 50;   
+   public static final int GRID_WIDTH  = CELL_SIZE * GRID_SIZE;
+   public static final int GRID_HEIGHT = CELL_SIZE * GRID_SIZE;
+   
+   public static final Font FONT = new Font("Crash Numbering Font", Font.BOLD, 20);
+   
+   private static final String[] ACCEPTED_INPUTS = {"", "1", "2", "3", "4", 
+		   											"5", "6", "7", "8", "9"};
+  
+   private JTextField[][] grid = new JTextField[GRID_SIZE][GRID_SIZE];
+ 
+   
+   
+   public SudokuController(Sudoku sudoku) {
+	   SwingUtilities.invokeLater(() -> createWindow(sudoku));
+   }
+   
+   public SudokuController() {
+	   SwingUtilities.invokeLater(() -> createWindow(new Sudoku()));
+   }
+   
+   private void createWindow(Sudoku sudoku) {
+      Container pane = getContentPane();
+      pane.setLayout(new BorderLayout());
+ 
+      JPanel gridPanel = new JPanel();
+      pane.add(gridPanel);
+      gridPanel.setPreferredSize(new Dimension(GRID_WIDTH, GRID_HEIGHT));
+      gridPanel.setLayout(new GridLayout(GRID_SIZE,GRID_SIZE));
+      for (int i = 0; i < GRID_SIZE; ++i) {
+         for (int j = 0; j < GRID_SIZE; ++j) {
+            grid[i][j] = new JTextField(); 
+            gridPanel.add(grid[i][j]); 
+            if ((i/3==1 && j/3!=1) || (i/3!=1 && j/3==1)) {
+            	grid[i][j].setBackground(Color.YELLOW);
+            }
+            if (sudoku.getMatrix()[i][j] == 0) {
+               grid[i][j].setText("");   
+            } else {
+               grid[i][j].setText(sudoku.getMatrix()[i][j] + "");
+            }
+            grid[i][j].setHorizontalAlignment(JTextField.CENTER);
+            grid[i][j].setFont(FONT);
+         }
+      }
+      
+      JPanel buttonPanel = new JPanel();
+      JButton solve = new JButton("Solve");
+      JButton clear = new JButton("Clear");
+      buttonPanel.add(solve);
+      buttonPanel.add(clear);
+      
+      solve.addActionListener(event -> {
+    	  int[][] tempGrid = new int[9][9];
+    	  for (int i = 0; i < 9; i++) {
+    		  for (int j = 0; j < 9; j++) {
+    			  if (!Arrays.stream(ACCEPTED_INPUTS).anyMatch(
+    					  						grid[i][j].getText().trim()::equals)) {
+    				  JOptionPane.showMessageDialog(null, "Sudoku contains invalid imput",
+		  						"", JOptionPane.ERROR_MESSAGE);
+    				  return;
+    			  }
+    			  else if (grid[i][j].getText().trim().equals(""))
+    				  tempGrid[i][j] = 0;
+    			  else
+    				  tempGrid[i][j] = Integer.parseInt(
+    						  grid[i][j].getText().trim());
+    		  }
+    	  }
+    	  sudoku.setMatrix(tempGrid);
+    	  if (sudoku.solve()) {
+    		  for (int i = 0; i < 9; i++) {
+    	   		   	for (int j = 0; j < 9; j++){
+    	   		   		grid[i][j].setText(sudoku.getMatrix()[i][j] + "");
+    	   		   	}
+    		  }   		  
+    	  }
+//    		  updateGrid(sudoku, grid);
+    	  else 
+    		  JOptionPane.showMessageDialog(null, "Sudoku not solvable",
+    				  						"", JOptionPane.ERROR_MESSAGE);
+      });
+      
+      clear.addActionListener(event -> {
+    	  sudoku.clear();
+    	  for (int i = 0; i < 9; i++) {
+   		   	for (int j = 0; j < 9; j++){
+   		   		grid[i][j].setText("");
+   		   	}
+    	  }
+//    	  updateGrid(sudoku, grid);
+      });
+      
+      pane.add(buttonPanel, BorderLayout.SOUTH);
+      getRootPane().setDefaultButton(solve);
+      
+      pack();
+      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      setTitle("Sudoku");
+      setResizable(false);
+      setVisible(true);
+   }
+//
+//   private void updateGrid(Sudoku sudoku, JTextField[][] grid) {
+//	   for (int i = 0; i < 9; i++) {
+//		   for (int j = 0; j < 9; j++){
+//			   if (sudoku.getMatrix()[i][j] != 0)
+//			   grid[i][j].setText(sudoku.getMatrix()[i][j] + "");
+//			   else
+//				   grid[i][j].setText("");
+//		   }
+//	   }
+//	   
+//   }
+
+}

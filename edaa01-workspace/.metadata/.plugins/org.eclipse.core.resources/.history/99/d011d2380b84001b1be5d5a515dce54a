@@ -1,0 +1,26 @@
+package tentatester;
+
+public class SumOfDigits {
+
+	public static void main(String[] args) {
+		
+		        int nbr = 122;
+		        int sum = 0;
+		        if (nbr < 0)
+		            nbr = -nbr;
+		        int nbrOfDigits = String.valueOf(nbr).length();
+		        System.out.println(String.valueOf(nbr).length());
+		        int pow = 10;
+		        for (int i = 1 ; i < nbrOfDigits ; i++) {
+		            System.out.println(i);
+		        	sum += nbr % pow;
+		        	System.out.println("sum" + sum);
+		            nbr = nbr / pow;
+		            System.out.println("number" + nbr);
+		        }
+		        System.out.println(sum);
+		
+
+	}
+
+}

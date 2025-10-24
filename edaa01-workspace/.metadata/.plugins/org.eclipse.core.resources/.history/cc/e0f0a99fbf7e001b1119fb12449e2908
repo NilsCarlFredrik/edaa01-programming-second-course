@@ -1,0 +1,199 @@
+package sudoku;
+
+public class Sudoku implements SudokuSolver {
+	private int[][] grid = new int[9][9];
+	
+	/**
+	 * Constructs sudoku object with empty grid
+	 */
+	public Sudoku() {
+	}
+	
+	/**
+	 * Constructs sudoku object with grid
+	 * @param grid
+	 * 			The sudoku grid
+	 */
+	public Sudoku(int[][] grid) {
+		setMatrix(grid);
+	}
+
+	@Override
+	public void setNumber(int r, int c, int nbr) {
+		if (r < 0 || r > 8 || c < 0 || c > 8 || nbr < 0 || nbr > 9) {
+		    throw new IllegalArgumentException("Index out of interval [0..8] "
+		    		+ "(r=" + r + ", c=" + c + ") or number out of interval [1..9]"
+		    		+ "(nbr=" + nbr + ")" );
+		}
+		
+		grid[r][c] = nbr;
+		
+	}
+
+	@Override
+	public int getNumber(int r, int c) {
+		if (r < 0 || r > 8 || c < 0 || c > 8) {
+		    throw new IllegalArgumentException("Index out of interval 0-8 (r=" + r + ", c=" + c + ")");
+		}
+		
+		return grid[r][c];
+	}
+
+	@Override
+	public void clearNumber(int r, int c) {
+		if (r < 0 || r > 8 || c < 0 || c > 8) {
+		    throw new IllegalArgumentException("Index out of interval 0-8 (r=" + r + ", c=" + c + ")");
+		  }
+		
+		grid[r][c] = 0;
+		
+	}
+
+	@Override
+	public boolean isValid(int r, int c, int nbr) {
+		if (r < 0 || r > 8 || c < 0 || c > 8 || nbr < 1 || nbr > 9) {
+		    throw new IllegalArgumentException("Index out of interval [0..8] "
+		    		+ "(r=" + r + ", c=" + c + ") or number out of interval [1..9]"
+		    		+ "(nbr=" + nbr + ")" );
+		  }
+		
+		if (!inLines(r, c, nbr) && !inBox(r, c, nbr)) {
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean inLines(int r, int c, int nbr) {
+		for (int i = 0; i < 9; i++){
+			if (i!=c && grid[r][i] == nbr){
+				return true;
+			} 
+			if (i!=r && grid[i][c] == nbr ){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean inBox(int r, int c, int nbr) {
+		
+		int boxRow = (r / 3) * 3;
+		int boxCol = (c / 3) * 3;
+		for(int i = boxRow; i < boxRow + 3; i++) {
+			for(int j = boxCol; j < boxCol + 3; j++) {
+				if(i != r && j != c && grid[i][j] == nbr) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	
+
+	@Override
+	public boolean isAllValid() {
+		// TODO Auto-generated method stub
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				if (!isValid(i, j, getNumber(i, j))) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public boolean solve() {
+		// TODO Auto-generated method stub
+		return solve(0,0);
+	}
+	
+	private boolean solve(int r, int c) {
+
+		if (r == 9) { // har vi kommit till rad 9 är vi klara (sista rutan)
+			return true;
+		}
+
+		if (getNumber(r, c) == 0) {
+			for (int x = 1; x <= 9; x++) {
+				setNumber(r, c, x);
+				if (!inLines(r, c, x) && !inBox(r, c, x)) {
+					if (c != 8) {
+						if (solve(r, c + 1)) {
+							return true;
+						}
+					} else {
+						if (solve(r + 1, 0)) {  
+							return true;
+						}
+					}
+				}
+			}
+			setNumber(r, c, 0);
+			return false;
+
+		} else {
+			if (!inLines(r, c, getNumber(r, c)) && !inBox(r, c, getNumber(r, c))) {
+				if (c == 8) {
+					if (solve(r + 1, 0)) {
+						return true;
+					}
+				} else {
+					if (solve(r, c + 1)) {
+						return true;
+					}
+
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public void clear() {
+		// TODO Auto-generated method stub
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				grid[i][j] = 0;
+			}
+		}
+		
+	}
+
+	@Override
+	public int[][] getMatrix() {
+		// TODO Auto-generated method stub
+		return grid;
+	}
+
+	@Override
+	public void setMatrix(int[][] nbrs) {
+		if (nbrs.length != 9|| nbrs[0].length != 9) {
+			throw new IllegalArgumentException("Matrix has dimension " + 
+							nbrs.length + "x" + nbrs[0].length + ", should be 9x9." );
+		} 
+		for (int[] i : nbrs) {
+			for (int j : i) {
+				if (j < 0 || j > 9) {
+					throw new IllegalArgumentException(
+							"Matrix contains numbers outside of range [0..9]");
+				}
+			}
+		}
+		grid = nbrs;
+		
+	}
+
+	// method for testing
+	private void printMatrix() {
+		for (int[] i : grid) {
+            for (int j : i) {
+                System.out.print(j + " ");
+            }
+            System.out.println();
+        }
+	}
+	
+}
